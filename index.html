@@ -1,36 +1,33 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
 <style>
-  .node {
-  }
-
-  .link {
-    stroke: #ec1a1a;
-    stroke-opacity: 0.6;
-  }
-
-  .cell {
-    fill: none;
-  }
-
   .axis text {
-    fill: #000000; /* <== Set the fill */
-
+    fill: #000000;
     cursor: move;
   }
   div.tooltip {
     position: absolute;
     text-align: center;
     width: 100px;
-    height: 100px;
+    height: 75px;
     padding: 2px;
-    font: 12px sans-serif;
-    background: lightsteelblue;
+    font-size: 12px;
+    background-color: #000;
+    background-color: hsla(0, 0%, 10%, 0.9);
     border: 0px;
     border-radius: 8px;
     pointer-events: none;
     z-index: 10;
-    color: #000000;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    line-break: 1.5;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu,
+      Cantarell, 'Helvetica Neue', sans-serif;
   }
 </style>
 <body>
@@ -138,17 +135,7 @@
     };
     // var color = d3.scale.category20();
 
-    let color = [
-      '#1abc9c',
-      '#2ecc71',
-      '#3498db',
-      '#9b59b6',
-      '#34495e',
-      '#16a085',
-      '#27ae60',
-      '#2980b9',
-      '#8e44ad'
-    ];
+    let color = ['#7f8c8d', '#2c3e50', '#8e44ad', '#2980b9', '#16a085', '#d35400', '#27ae60'];
     var force = d3.layout
       .forceInABox()
       .charge(-120)
@@ -182,7 +169,7 @@
     edgeEnter
       .append('line')
       .style('stroke-width', function(d) {
-        return d.weight;
+        return d.weight / 2;
       })
       .style('stroke', '#999999')
       .style('pointer-events', 'none');
@@ -200,7 +187,7 @@
           .duration(200)
           .style('opacity', 0.9);
         div
-          .html('Name :' + d.name + '<br/>' + 'Weight :' + d.weight + '<br/>' + d.position)
+          .html('Name: ' + d.name + '<br/>Position:' + d.position + '<br/>' + 'Weight :' + d.weight)
           .style('left', d.x + 'px')
           .style('top', d.y - 28 + 'px');
       })
@@ -222,8 +209,12 @@
       });
     nodes
       .append('text')
-      .attr('dx', -3)
-      .attr('dy', '0.35em')
+      .attr('dx', function(d) {
+        return -0.7 - d.weight * 0.1 + 'em';
+      })
+      .attr('dy', function(d) {
+        return 2 + 'em';
+      })
       .style('text-anchor', 'start')
       .style('font-size', function(d) {
         return d.weight * 2 + 'px';
