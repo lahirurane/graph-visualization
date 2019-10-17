@@ -2,7 +2,7 @@
 
 [Demo Here](https://lahirurane.github.io/graph-visualization/) : https://lahirurane.github.io/graph-visualization/
 
-## force directed graph cluster
+## Force directed graph with clustering
 
 This project uses D3.js to create a Force directed graph and using Forced in a Box to cluster graph layeout.
 
