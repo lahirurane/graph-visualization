@@ -1,6 +1,10 @@
 # graph-visualization
 
-This project uses D3.js Force Graph and using Forced in a Box to cluster graph layeout.
+[Demo Here](https://lahirurane.github.io/graph-visualization/) : https://lahirurane.github.io/graph-visualization/
+
+## force directed graph cluster
+
+This project uses D3.js to create a Force directed graph and using Forced in a Box to cluster graph layeout.
 
 The example is made for a the given dataset is to visualize an organization's email network through graph visualization and clustered graph visualization.
 
