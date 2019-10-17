@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<style>
+  .axis text {
+    fill: #000000;
+    cursor: move;
+  }
+  div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 100px;
+    height: 75px;
+    padding: 2px;
+    font-size: 12px;
+    background-color: #000;
+    background-color: hsla(0, 0%, 10%, 0.9);
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 10;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    line-break: 1.5;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu,
+      Cantarell, 'Helvetica Neue', sans-serif;
+  }
+</style>
+<body>
+  <div id="chart"><svg height="900" width="1500" class="main"></svg></div>
+
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script type="text/javascript" src="./forceInABoxv3.js"></script>
+
+  <script>
+    var width = 1500,
+      height = 900;
+
+    var json = {
+      nodes: [
+        { name: 'James', group: 1, position: 'Director' },
+        { name: 'David', group: 1, position: 'Director' },
+        { name: 'George', group: 1, position: 'CEO' },
+        {
+          name: 'Ronald',
+          group: 2,
+          position: 'Business Development Manager'
+        },
+        { name: 'John', group: 2, position: 'Business Support Manager' },
+        { name: 'Richard', group: 2, position: 'Business Control Manager' },
+        { name: 'Daniel', group: 3, position: 'Sales Department Leader' },
+        {
+          name: 'Kenneth',
+          group: 3,
+          position: 'Product Department Leader'
+        },
+        {
+          name: 'Anthony',
+          group: 3,
+          position: 'Marketing Department Leader'
+        },
+        { name: 'Robert', group: 4, position: 'Project Office Leader' },
+        {
+          name: 'Charles',
+          group: 4,
+          position: 'Professional Service Leader'
+        },
+        { name: 'Paul', group: 4, position: 'QA Leader' },
+        { name: 'Mark', group: 5, position: 'Design Office Leader' },
+        {
+          name: 'Kevin',
+          group: 5,
+          position: 'Technical Support Office Leader'
+        },
+        {
+          name: 'Edward',
+          group: 5,
+          position: 'Software Development Leader'
+        },
+        { name: 'Joseph', group: 6, position: 'Legal Office Leader' },
+        { name: 'Michael', group: 6, position: 'Finance Office Leader' },
+        { name: 'Jason', group: 6, position: 'HR Office Leader' }
+      ],
+      links: [
+        { source: 0, target: 1, weight: 1 },
+        { source: 0, target: 2, weight: 1 },
+        { source: 1, target: 2, weight: 1 },
+        { source: 2, target: 3, weight: 2 },
+        { source: 2, target: 4, weight: 2 },
+        { source: 2, target: 5, weight: 3 },
+        { source: 3, target: 6, weight: 4 },
+        { source: 3, target: 7, weight: 5 },
+        { source: 3, target: 8, weight: 5 },
+        { source: 4, target: 9, weight: 6 },
+        { source: 4, target: 10, weight: 4 },
+        { source: 4, target: 11, weight: 5 },
+        { source: 4, target: 12, weight: 7 },
+        { source: 4, target: 13, weight: 4 },
+        { source: 4, target: 14, weight: 5 },
+        { source: 5, target: 15, weight: 5 },
+        { source: 5, target: 16, weight: 3 },
+        { source: 5, target: 17, weight: 5 },
+        { source: 6, target: 7, weight: 3 },
+        { source: 6, target: 8, weight: 4 },
+        { source: 7, target: 8, weight: 4 },
+        { source: 9, target: 10, weight: 2 },
+        { source: 9, target: 11, weight: 4 },
+        { source: 9, target: 12, weight: 7 },
+        { source: 9, target: 13, weight: 2 },
+        { source: 9, target: 14, weight: 4 },
+        { source: 10, target: 11, weight: 5 },
+        { source: 10, target: 12, weight: 5 },
+        { source: 10, target: 13, weight: 4 },
+        { source: 10, target: 14, weight: 3 },
+        { source: 11, target: 12, weight: 3 },
+        { source: 11, target: 13, weight: 4 },
+        { source: 12, target: 14, weight: 3 },
+        { source: 15, target: 16, weight: 3 },
+        { source: 15, target: 17, weight: 4 },
+        { source: 16, target: 17, weight: 5 },
+        { source: 17, target: 7, weight: 1 },
+        { source: 16, target: 6, weight: 2 },
+        { source: 16, target: 7, weight: 2 },
+        { source: 16, target: 8, weight: 3 },
+        { source: 16, target: 9, weight: 2 },
+        { source: 16, target: 11, weight: 2 },
+        { source: 16, target: 13, weight: 2 },
+        { source: 16, target: 14, weight: 2 },
+        { source: 16, target: 10, weight: 2 }
+      ]
+    };
+    // var color = d3.scale.category20();
+
+    let color = ['#7f8c8d', '#2c3e50', '#8e44ad', '#2980b9', '#16a085', '#d35400', '#27ae60'];
+    var force = d3.layout
+      .forceInABox()
+      .charge(-120)
+      .linkDistance(50)
+      .linkStrengthInterCluster(0.01)
+      .gravityToFoci(0.1)
+      .gravityOverall(0.05)
+      .size([width, height])
+      .groupBy('group');
+
+    force
+      .nodes(json.nodes)
+      .links(json.links)
+      .on('tick', updateGraph)
+      .start();
+
+    var div = d3
+      .select('#chart')
+      .append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0);
+
+    var edgeEnter = d3
+      .select('svg.main')
+      .selectAll('g.edge')
+      .data(json.links)
+      .enter()
+      .append('g')
+      .attr('class', 'edge');
+
+    edgeEnter
+      .append('line')
+      .style('stroke-width', function(d) {
+        return d.weight / 2;
+      })
+      .style('stroke', '#999999')
+      .style('pointer-events', 'none');
+
+    var nodes = d3
+      .select('svg.main')
+      .selectAll('g.node')
+      .data(json.nodes)
+      .enter()
+      .append('g')
+      .attr('class', 'node')
+      .on('mouseover', function(d) {
+        div
+          .transition()
+          .duration(200)
+          .style('opacity', 0.9);
+        div
+          .html('Name: ' + d.name + '<br/>Position:' + d.position + '<br/>' + 'Weight :' + d.weight)
+          .style('left', d.x + 'px')
+          .style('top', d.y - 28 + 'px');
+      })
+      .on('mouseout', function(d) {
+        div
+          .transition()
+          .duration(500)
+          .style('opacity', 0);
+      })
+      .call(force.drag());
+
+    nodes
+      .append('circle')
+      .attr('r', function(d) {
+        return d.weight * 2.5;
+      })
+      .style('fill', function(d) {
+        return color[d.group];
+      });
+    nodes
+      .append('text')
+      .attr('dx', function(d) {
+        return -0.7 - d.weight * 0.1 + 'em';
+      })
+      .attr('dy', function(d) {
+        return 2 + 'em';
+      })
+      .style('text-anchor', 'start')
+      .style('font-size', function(d) {
+        return d.weight * 2 + 'px';
+      })
+      .text(function(d) {
+        return d.name;
+      });
+
+    function updateGraph(e) {
+      force.onTick(e);
+      d3.selectAll('line')
+        .attr('x1', function(d) {
+          return d.source.x;
+        })
+        .attr('y1', function(d) {
+          return d.source.y;
+        })
+        .attr('x2', function(d) {
+          return d.target.x;
+        })
+        .attr('y2', function(d) {
+          return d.target.y;
+        });
+      d3.selectAll('g.node').attr('transform', function(d) {
+        return 'translate(' + d.x + ',' + d.y + ')';
+      });
+    }
+  </script>
+</body>
