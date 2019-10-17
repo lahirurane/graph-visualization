@@ -4,7 +4,8 @@
   "description": "Graph Visualization using D3.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "gh-pages -d ./"
   },
   "repository": {
     "type": "git",
@@ -22,9 +23,10 @@
   "bugs": {
     "url": "https://github.com/lahirurane/graph-visualization/issues"
   },
-  "homepage": "https://github.com/lahirurane/graph-visualization#readme",
+  "homepage": "https://lahirurane.github.io/graph-visualization/index.html",
   "dependencies": {
     "csvtojson": "^2.0.10",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "gh-pages": "^2.1.1"
   }
 }
