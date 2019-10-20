@@ -175,7 +175,6 @@ d3.layout.forceInABox = function() {
         count: l.count
       });
     });
-
     return { nodes: nodes, links: links };
   }
 
@@ -246,6 +245,8 @@ d3.layout.forceInABox = function() {
     net = getGroupsGraph();
     templateForce.nodes(net.nodes);
     templateForce.links(net.links);
+
+    console.log(net.links);
 
     templateForce.start();
     templateNodes = templateForce.nodes();
